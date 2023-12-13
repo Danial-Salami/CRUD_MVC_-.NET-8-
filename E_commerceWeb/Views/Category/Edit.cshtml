@@ -8,7 +8,7 @@
             <hr />
         </div>
         @* <div asp-validation-summary="All" class="text-danger"></div> *@
-        <div class="mt-4 row p-1"> 
+        <div class="mt-4 row p-1">
             <label asp-for="Name" class="p-0"></label>
             <input asp-for="Name" class="form-control mt-1 mb-1" />
             <span asp-validation-for="Name" class="text-danger"></span>
@@ -20,19 +20,20 @@
         </div>
         <div class="row mt-3">
             <div class="col-6 col-md-3 row">
-                <button type="submit" class="btn btn-success form-control mx-1">Create</button>
+                <button type="submit" class="btn btn-info form-control mx-1">Update</button>
             </div>
             <div class="col-6 col-md-3 row">
                 <a asp-controller="Category" asp-action="Index" class="btn btn-dark form-control mx-2">Back to List </a>
             </div>
         </div>
-      
+
     </div>
 
 
 </form>
-@section Scripts{
+@section Scripts {
     @{
-        <partial name="_ValidationScriptsPartial"/>
+        <partial name="_ValidationScriptsPartial" />
     }
 }
+
