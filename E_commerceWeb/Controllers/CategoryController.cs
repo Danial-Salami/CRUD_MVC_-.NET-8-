@@ -11,10 +11,36 @@ namespace E_commerceWeb.Controllers
         {
             _db = db;
         }
-        public IActionResult Index()
+      
+        public ViewResult Index(string sortOrder,string searchString)
         {
-            List<Category> objCategoryList = _db.Categories.ToList();
-            return View(objCategoryList);
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DisplayOrderSortParm = sortOrder == "displayOrder" ? "displayOrder_desc" : "displayOrder";
+            var objs = from obj in _db.Categories
+                           select obj;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                objs = objs.Where(obj => obj.Name.Contains(searchString));
+                                       
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    objs = objs.OrderByDescending(obj => obj.Name);
+                    break;
+                case "displayOrder":
+                    objs = objs.OrderBy(obj => obj.DisplayOrder);
+                    break;
+                case "displayOrder_desc":
+                    objs = objs.OrderByDescending(obj => obj.DisplayOrder);
+                    break;
+                default:
+                    objs = objs.OrderBy(obj => obj.Name);
+
+                    break;
+            }
+            return View(objs.ToList());
         }
         public IActionResult Create()
         {

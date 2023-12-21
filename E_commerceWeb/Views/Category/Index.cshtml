@@ -1,5 +1,10 @@
-﻿@model List<Category>
-
+﻿
+@model IEnumerable<Category>
+@* @using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@{
+    ViewBag.Title = "Category List";
+} *@
     <div class="container">
         <div class="row pt-4 pb-3">
             <div class="col-6">
@@ -10,22 +15,30 @@
             </div>
         </div>
 
-  
-    <table class="table table-bordered table-striped table-secondary ">
+       
+  <table class="table table-bordered table-striped table-secondary ">
 
 
         <thead>
             <tr>
                 <th>
-                    Category Name
+                    @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm })
                 </th>
                 <th>
-                    Display Order
+                    @Html.ActionLink("Display Order", "Index", new { sortOrder = ViewBag.DisplayOrderSortParm })
                 </th>
-                <th></th>
+                        @using (Html.BeginForm())
+                        {
+                            <th >
+                                <label>Find by name: @Html.TextBox("SearchString")</label>
+                                <input type="submit" value="Search" />
+                            </th>
+                        }
             </tr>
         </thead>
         <tbody>
+    
+            
             @foreach(var obj in Model) {
                 <tr>
                     <td>
