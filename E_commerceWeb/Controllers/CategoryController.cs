@@ -28,8 +28,10 @@ namespace E_commerceWeb.Controllers
             
 
             this.ViewBag.Pager = pager;
+            
             ViewBag.NameSortParm = sortOrder ==  "name" ? "name_desc" : "name";
             ViewBag.DisplayOrderSortParm = sortOrder == "displayOrder" ? "displayOrder_desc" : "displayOrder";
+            ViewBag.CurrentSort = sortOrder;
             var objs = from obj in _db.Categories
                            select obj;
             if (!String.IsNullOrEmpty(searchString))

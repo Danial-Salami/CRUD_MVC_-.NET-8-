@@ -29,10 +29,10 @@
         <thead>
             <tr>
                 <th>
-                    @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm })
+                    @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm})
                 </th>
                 <th>
-                    @Html.ActionLink("Display Order", "Index", new { sortOrder = ViewBag.DisplayOrderSortParm })
+                    @Html.ActionLink("Display Order", "Index", new { sortOrder = ViewBag.DisplayOrderSortParm})
                 </th>
                         @using (Html.BeginForm())
                         {
@@ -81,7 +81,7 @@
             @for (var pge = pager.StartPage; pge <= pager.Endpage; pge++)
             {
                 <li class="page-item" @(pge == pager.CurrentPage ? "active" : "")>
-                    <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-pg="@pge">@pge</a>
+                    <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="@pge">@pge</a>
                 </li>
             }
         </ul>
