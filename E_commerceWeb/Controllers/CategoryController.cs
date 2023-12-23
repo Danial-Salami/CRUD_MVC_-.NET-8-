@@ -11,11 +11,24 @@ namespace E_commerceWeb.Controllers
         {
             _db = db;
         }
-      
-        public ViewResult Index(string sortOrder,string searchString)
-        {
 
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+        public ViewResult Index(string sortOrder, string searchString, int pg = 1)
+        {
+            const int pageSize = 10;
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+            List<Category> categories = _db.Categories.ToList();
+            int recsCount = categories.Count();
+
+            var pager = new Pager(recsCount, pg, pageSize);
+            int recSkip = (pg - 1) * pageSize;
+
+            
+
+            this.ViewBag.Pager = pager;
+            ViewBag.NameSortParm = sortOrder ==  "name" ? "name_desc" : "name";
             ViewBag.DisplayOrderSortParm = sortOrder == "displayOrder" ? "displayOrder_desc" : "displayOrder";
             var objs = from obj in _db.Categories
                            select obj;
@@ -28,6 +41,11 @@ namespace E_commerceWeb.Controllers
             {
                 case "name_desc":
                     objs = objs.OrderByDescending(obj => obj.Name);
+
+                    break;
+                case "name":
+                    objs = objs.OrderBy(obj => obj.Name);
+
                     break;
                 case "displayOrder":
                     objs = objs.OrderBy(obj => obj.DisplayOrder);
@@ -36,12 +54,14 @@ namespace E_commerceWeb.Controllers
                     objs = objs.OrderByDescending(obj => obj.DisplayOrder);
                     break;
                 default:
-                    objs = objs.OrderBy(obj => obj.Name);
+                    objs = objs.OrderBy(obj => obj.Id);
 
                     break;
             }
-            return View(objs.ToList());
+            var data = objs.Skip(recSkip).Take(pager.PageSize).ToList();
+            return View(data);
         }
+
         public IActionResult Create()
         {
             return View();
