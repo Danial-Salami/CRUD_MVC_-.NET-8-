@@ -22,23 +22,32 @@ namespace E_commerceWeb.Controllers
             List<Category> categories = _db.Categories.ToList();
             int recsCount = categories.Count();
 
-            var pager = new Pager(recsCount, pg, pageSize);
-            int recSkip = (pg - 1) * pageSize;
+           
 
             
 
-            this.ViewBag.Pager = pager;
+            
             
             ViewBag.NameSortParm = sortOrder ==  "name" ? "name_desc" : "name";
             ViewBag.DisplayOrderSortParm = sortOrder == "displayOrder" ? "displayOrder_desc" : "displayOrder";
             ViewBag.CurrentSort = sortOrder;
+            ViewBag.SearchString = searchString;
             var objs = from obj in _db.Categories
                            select obj;
             if (!String.IsNullOrEmpty(searchString))
             {
-                objs = objs.Where(obj => obj.Name.Contains(searchString));
-                                       
+                 objs = objs.Where(obj => obj.Name.Contains(searchString));
+
+
+                  recsCount = objs.Count(); 
+
+
             }
+            var pager = new Pager(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+            this.ViewBag.Pager = pager;
+
             switch (sortOrder)
             {
                 case "name_desc":

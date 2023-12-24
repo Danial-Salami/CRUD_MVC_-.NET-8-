@@ -29,18 +29,20 @@
         <thead>
             <tr>
                 <th>
-                    @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm})
+                    @Html.ActionLink("Name", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.NameSortParm })
                 </th>
                 <th>
-                    @Html.ActionLink("Display Order", "Index", new { sortOrder = ViewBag.DisplayOrderSortParm})
+                    @Html.ActionLink("Display Order", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.DisplayOrderSortParm })
                 </th>
-                        @using (Html.BeginForm())
-                        {
-                            <th >
-                                <label>Find by name: @Html.TextBox("SearchString")</label>
-                                <input type="submit" value="Search" />
-                            </th>
-                        }
+                <th>
+
+                    @using (Html.BeginForm("Index", "Category", FormMethod.Get))
+                    {
+                        <label>Find by name: @Html.TextBox("SearchString", ViewBag.SearchString as string)</label>
+                        <input type="submit" value="Search" />
+                    }
+                </th>
+                  
             </tr>
         </thead>
         <tbody>
@@ -69,21 +71,44 @@
 
             }
         </tbody>
-
+       
+           
+        
     </table>
+    <nav aria-label="Page navigation example ">
+
+
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination pagination-sm justify-content-center">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item ">
+                        <a class="page-link border-secondary " asp-controller="Category" asp-action="Index"  asp-route-searchString="@ViewBag.SearchString" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link border-secondary" aria-label="Previous" asp-controller="Category" asp-action="Index" asp-route-searchString="@ViewBag.SearchString" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="@(pager.CurrentPage-1)"> <span aria-hidden="true">&laquo;</span></a>
+                    </li>
+
+                }
+                @for (var pge = pager.StartPage; pge <= pager.Endpage; pge++)
+                {
+                    <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                        <a class="page-link border-secondary" asp-controller="Category" asp-action="Index" asp-route-searchString="@ViewBag.SearchString" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="@pge">@pge</a>
+                    </li>
+                }
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link border-secondary" aria-label="Next" asp-controller="Category" asp-action="Index" asp-route-searchString="@ViewBag.SearchString" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="@(pager.CurrentPage+1)"> <span aria-hidden="true">&raquo;</span></a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link border-secondary" asp-controller="Category" asp-action="Index" asp-route-searchString="@ViewBag.SearchString" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="@(pager.TotalPages)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </nav>
 
 </div>
-<div class="container">
-    @if (pager.TotalPages > 0)
-    {
-        <ul class="pagination justify-content-center">
 
-            @for (var pge = pager.StartPage; pge <= pager.Endpage; pge++)
-            {
-                <li class="page-item" @(pge == pager.CurrentPage ? "active" : "")>
-                    <a class="page-link" asp-controller="Category" asp-action="Index" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-pg="@pge">@pge</a>
-                </li>
-            }
-        </ul>
-    }
-</div>
