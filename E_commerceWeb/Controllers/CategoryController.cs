@@ -15,19 +15,10 @@ namespace E_commerceWeb.Controllers
         public ViewResult Index(string sortOrder, string searchString, int pg = 1)
         {
             const int pageSize = 10;
-            if (pg < 1)
-            {
-                pg = 1;
-            }
+            
             List<Category> categories = _db.Categories.ToList();
             int recsCount = categories.Count();
 
-           
-
-            
-
-            
-            
             ViewBag.NameSortParm = sortOrder ==  "name" ? "name_desc" : "name";
             ViewBag.DisplayOrderSortParm = sortOrder == "displayOrder" ? "displayOrder_desc" : "displayOrder";
             ViewBag.CurrentSort = sortOrder;
@@ -44,7 +35,11 @@ namespace E_commerceWeb.Controllers
 
             }
             var pager = new Pager(recsCount, pg, pageSize);
-
+            if (pg < 1 && pg > pager.Endpage)
+            {
+                pg = 1;
+            }
+        
             int recSkip = (pg - 1) * pageSize;
             this.ViewBag.Pager = pager;
 
