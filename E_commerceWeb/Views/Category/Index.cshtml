@@ -29,6 +29,9 @@
         <thead>
             <tr>
                 <th>
+                   
+                </th>
+                <th>
                     @Html.ActionLink("Name", "Index", new { searchString = ViewBag.SearchString, sortOrder = ViewBag.NameSortParm })
                 </th>
                 <th>
@@ -50,6 +53,9 @@
             
             @foreach(var obj in Model) {
                 <tr>
+                    <td class="col-1">
+                        <img src="@obj.ImageUrl" class="" width="100%"/>
+                    </td>
                     <td>
                         @obj.Name
                     </td>

@@ -16,9 +16,9 @@ namespace E_commerceWeb.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "phone", DisplayOrder = 1 },
-                new Category { Id = 2, Name = "computer", DisplayOrder = 2 },
-                new Category { Id = 3, Name = "tablet", DisplayOrder = 3 }
+                new Category { Id = 1, Name = "phone", DisplayOrder = 1, ImageUrl = "" },
+                new Category { Id = 2, Name = "computer", DisplayOrder = 2, ImageUrl = "" },
+                new Category { Id = 3, Name = "tablet", DisplayOrder = 3,ImageUrl="" }
                 );
         }
     }
