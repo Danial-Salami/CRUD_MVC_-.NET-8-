@@ -7,10 +7,14 @@ namespace E_commerceWeb.Controllers
 {
     public class CategoryController : Controller
     {
-
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+       
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
-        {
+        public CategoryController(ICategoryService categoryService, ApplicationDbContext dbContext,
+            IWebHostEnvironment webHostEnvironment)
+        {  _dbContext = dbContext;
+                _webHostEnvironment = webHostEnvironment;
             _categoryService = categoryService;
         }
 
@@ -51,8 +55,8 @@ namespace E_commerceWeb.Controllers
                     }
                     obj.ImageUrl = @"\images\category\" + fileName;
                 }
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _dbContext.Categories.Add(obj);
+                _dbContext.SaveChanges();
                 TempData["success"] = "Category created successfuly.";
                 return RedirectToAction("Index");
             }
@@ -65,7 +69,7 @@ namespace E_commerceWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.Find(id);
+            Category? categoryFromDb = _dbContext.Categories.Find(id);
 
             if (categoryFromDb == null)
             {
@@ -104,8 +108,8 @@ namespace E_commerceWeb.Controllers
                     }
                     obj.ImageUrl = @"\images\category\" + fileName;
                 }
-                _db.Categories.Update(obj);
-                _db.SaveChanges();
+                _dbContext.Categories.Update(obj);
+                _dbContext.SaveChanges();
                 TempData["success"] = "Category updated successfuly.";
                 return RedirectToAction("Index");
             }
@@ -119,7 +123,7 @@ namespace E_commerceWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.Find(id);
+            Category? categoryFromDb = _dbContext.Categories.Find(id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -130,13 +134,13 @@ namespace E_commerceWeb.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? obj = _db.Categories.Find(id);
+            Category? obj = _dbContext.Categories.Find(id);
             if (obj == null)
             {
                 return NotFound();
             }
-            _db.Categories.Remove(obj);
-            _db.SaveChanges();
+            _dbContext.Categories.Remove(obj);
+            _dbContext.SaveChanges();
             TempData["success"] = "Category deleted successfuly.";
             return RedirectToAction("Index");
 
