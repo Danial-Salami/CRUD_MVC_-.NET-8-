@@ -7,14 +7,11 @@ namespace E_commerceWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-       
+      
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService, ApplicationDbContext dbContext,
-            IWebHostEnvironment webHostEnvironment)
-        {  _dbContext = dbContext;
-                _webHostEnvironment = webHostEnvironment;
+        public CategoryController(ICategoryService categoryService)
+        {  
+               
             _categoryService = categoryService;
         }
 
@@ -40,25 +37,24 @@ namespace E_commerceWeb.Controllers
         {
             if (obj.Name == obj.DisplayOrder.ToString())
             {
-                ModelState.AddModelError("name", "The Display Order can not exatly match the Category Name");
+                var errorMessage = "The Display Order cannot exactly match the Category Name";
+                ModelState.AddModelError("name", errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
+
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
+                try
                 {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string categoryPath = Path.Combine(wwwRootPath, @"images\category");
-                    using (var fileStream = new FileStream(Path.Combine(categoryPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-                    obj.ImageUrl = @"\images\category\" + fileName;
+                    _categoryService.CreateCategory(obj, file);
+                    TempData["success"] = "Category created successfully.";
+                    return RedirectToAction("Index");
                 }
-                _dbContext.Categories.Add(obj);
-                _dbContext.SaveChanges();
-                TempData["success"] = "Category created successfuly.";
-                return RedirectToAction("Index");
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError("name", ex.Message);
+                    return View();
+                }
             }
             return View();
         }
@@ -69,7 +65,8 @@ namespace E_commerceWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _dbContext.Categories.Find(id);
+            
+            Category? categoryFromDb = _categoryService.GetCategoryById(id);
 
             if (categoryFromDb == null)
             {
@@ -87,29 +84,8 @@ namespace E_commerceWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-
-                    if (!string.IsNullOrEmpty(obj.ImageUrl))
-                    {
-                        var oldImagePath = Path.Combine(wwwRootPath, obj.ImageUrl.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-
-                    }
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string categoryPath = Path.Combine(wwwRootPath, @"images\category");
-                    using (var fileStream = new FileStream(Path.Combine(categoryPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-                    obj.ImageUrl = @"\images\category\" + fileName;
-                }
-                _dbContext.Categories.Update(obj);
-                _dbContext.SaveChanges();
+                
+                _categoryService.EditCategory(obj, file);
                 TempData["success"] = "Category updated successfuly.";
                 return RedirectToAction("Index");
             }
@@ -123,7 +99,7 @@ namespace E_commerceWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _dbContext.Categories.Find(id);
+            Category? categoryFromDb = _categoryService.GetCategoryById(id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -134,23 +110,12 @@ namespace E_commerceWeb.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? obj = _dbContext.Categories.Find(id);
+            Category? obj = _categoryService.GetCategoryById(id);
             if (obj == null)
             {
                 return NotFound();
             }
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-            if (!string.IsNullOrEmpty(obj.ImageUrl))
-            {
-                var oldImagePath = Path.Combine(wwwRootPath, obj.ImageUrl.TrimStart('\\'));
-                if (System.IO.File.Exists(oldImagePath))
-                {
-                    System.IO.File.Delete(oldImagePath);
-                }
-
-            }
-            _dbContext.Categories.Remove(obj);
-            _dbContext.SaveChanges();
+            _categoryService.DeleteCategory(obj);
             TempData["success"] = "Category deleted successfuly.";
             return RedirectToAction("Index");
 
