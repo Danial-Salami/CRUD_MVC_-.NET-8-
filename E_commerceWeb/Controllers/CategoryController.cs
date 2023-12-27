@@ -139,6 +139,16 @@ namespace E_commerceWeb.Controllers
             {
                 return NotFound();
             }
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (!string.IsNullOrEmpty(obj.ImageUrl))
+            {
+                var oldImagePath = Path.Combine(wwwRootPath, obj.ImageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+
+            }
             _dbContext.Categories.Remove(obj);
             _dbContext.SaveChanges();
             TempData["success"] = "Category deleted successfuly.";
