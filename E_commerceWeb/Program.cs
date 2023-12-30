@@ -15,7 +15,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddScoped<CategoryController>();
 
-//this is git test
+//this is git test 2
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
