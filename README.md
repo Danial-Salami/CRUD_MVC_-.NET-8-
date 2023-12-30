@@ -1,3 +1,3 @@
-# E_commerce_CRUD_MVC
+# CRUD_MVC (.NET 8)
 
-simple MVC E_commerce that does CRUD operation (.NET 8)
+simple MVC that does CRUD operation (.NET 8)
